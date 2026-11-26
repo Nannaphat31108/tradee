@@ -24,6 +24,26 @@ npm run db:init               # สร้างตาราง + seed
 npm start                     # http://localhost:3000
 ```
 
+## Supabase
+ฐานข้อมูลอยู่ในโปรเจกต์ Supabase `bgdjrviiqukpqbchefre` (Singapore) สร้างตารางและ seed แล้ว
+- server ต่อผ่าน role `tradee_app` (สิทธิ์เฉพาะตาราง Tradee, แตะตารางอื่นในโปรเจกต์ไม่ได้)
+- ตาราง Tradee เปิด RLS และถอนสิทธิ์ `anon`/`authenticated` แล้ว (ดู `database/supabase_security.sql`)
+  จึงอ่านผ่าน Supabase REST API ด้วย anon key ไม่ได้ ข้อมูลออกทาง Node API เท่านั้น
+- `DATABASE_URL` ใช้ Session pooler:
+  `postgresql://tradee_app.bgdjrviiqukpqbchefre:<รหัส>@aws-1-ap-southeast-1.pooler.supabase.com:5432/postgres`
+- ลืมรหัส: Supabase → SQL Editor → `ALTER ROLE tradee_app PASSWORD 'รหัสใหม่';`
+
+## MT5 ทำงานยังไง
+```
+MetaTrader 5 (Windows) ──Python MetaTrader5 lib──▶ bridge.py ──HTTPS POST + X-Bridge-Key──▶ Node API ──▶ Supabase (candles, ticks_latest)
+                                                                                         ▲
+                                                           หน้าเว็บ (กราฟ) ──GET /api/candles ทุก 5 วิ──┘
+```
+- MT5 ไม่มี API บนเว็บ ต้องใช้ไลบรารี Python `MetaTrader5` ซึ่งคุยกับโปรแกรม MT5 ที่เปิดอยู่บน Windows เท่านั้น
+- bridge.py: `copy_rates_from_pos` ดึงแท่งเทียน, `symbol_info_tick` ดึง bid/ask แล้วส่งให้ API บันทึก (upsert ไม่ซ้ำ)
+- Windows เครื่องนั้นต้องเปิด MT5 ค้างไว้ตลอด แนะนำ Windows VPS
+- ถ้า API อยู่คนละเครื่อง ให้ตั้ง `TRADEE_API` เป็น URL จริง (https) และใช้ `BRIDGE_API_KEY` ตัวเดียวกันทั้งสองฝั่ง
+
 ## เชื่อม MT5 (ต้องรันบน Windows ที่ติดตั้ง MetaTrader 5)
 ```bash
 cd mt5_bridge

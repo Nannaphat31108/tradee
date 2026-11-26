@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pay After Pass — Tradee</title>
+  <meta name="description" content="Start a 1-step challenge for a small entry fee. Pay the activation fee only after you pass.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<!-- 1. Header -->
+<header class="nav">
+  <div class="container nav-inner">
+    <a href="/" class="logo"><span class="logo-mark">T</span>Tradee</a>
+    <nav class="nav-links" id="navLinks">
+      <div class="dd"><button>Products</button>
+        <div class="dd-menu"><a href="#">Trading Challenges</a><a href="#">Instant Funding</a><a href="#">Pay After Pass</a><a href="#how">How It Works</a></div></div>
+      <div class="dd"><button>Trading</button>
+        <div class="dd-menu"><a href="#">Our Rules</a><a href="#pricing">Pricing &amp; Plans</a><a href="#payouts">Rewards</a><a href="#chart">Live Chart</a><a href="#">Platforms</a></div></div>
+      <div class="dd"><button>Learn</button>
+        <div class="dd-menu"><a href="#">Blog</a><a href="#">Videos</a><a href="#">Coaching</a></div></div>
+      <div class="dd"><button>Tournaments</button>
+        <div class="dd-menu"><a href="#">All Tournaments</a><a href="#">How to Win</a></div></div>
+      <div class="dd"><button>Company</button>
+        <div class="dd-menu"><a href="#">About Us</a><a href="#">Contact</a><a href="#">Affiliate Program</a></div></div>
+    </nav>
+    <div class="nav-right">
+      <button class="lang">EN</button>
+      <a href="#" class="link">Log In</a>
+      <a href="#pricing" class="btn btn-primary btn-sm">Get started</a>
+      <button class="burger" id="burger" aria-label="Menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<main>
+<!-- 2. Hero -->
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <div class="crumb">Products <span>·</span> 1-Step Challenge</div>
+      <h1>Pay After <span class="grad">Pass</span></h1>
+      <p class="lead">Start a 1-step challenge for a small entry fee. The activation fee is charged only after you pass.</p>
+      <div class="cta-row">
+        <a href="#pricing" class="btn btn-primary">Start Trading</a>
+        <a href="#how" class="btn btn-ghost">See how it works</a>
+      </div>
+    </div>
+    <div class="plaque">
+      <div class="plaque-card">
+        <div class="plaque-top">TRADEE</div>
+        <div class="plaque-title">PAY AFTER<br>PASS</div>
+        <div class="plaque-price">from <b id="heroPrice">$9</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3. Stats bar -->
+<section class="stats container" id="stats"></section>
+
+<!-- 4. Trust row (replace with real awards once you have them) -->
+<section class="awards container">
+  <div class="award"><span>⚡</span><div><b>MetaTrader 5</b><small>Trade on MT5</small></div></div>
+  <div class="award"><span>⏱</span><div><b>No time limit</b><small>Single phase</small></div></div>
+  <div class="award"><span>💳</span><div><b>Card &amp; crypto</b><small>Pay your way</small></div></div>
+</section>
+
+<!-- 5. Payout carousel -->
+<section class="section" id="payouts">
+  <div class="container head-row">
+    <h2>Real trader payouts</h2>
+    <a href="#" class="link">View all rewards →</a>
+  </div>
+  <div class="marquee"><div class="marquee-track" id="payoutTrack"></div></div>
+</section>
+
+<!-- 6. How it works -->
+<section class="section" id="how">
+  <div class="container">
+    <h2 class="center">Pay a little to start.<br><span class="muted">Pay the rest only once you pass.</span></h2>
+    <p class="center sub">Why pay full price for an account you haven't earned yet?</p>
+    <div class="steps">
+      <div class="step"><div class="num">01</div><h3>Pay the entry fee</h3><p>A small fee unlocks your 1-step evaluation.</p></div>
+      <div class="step"><div class="num">02</div><h3>Pass the challenge</h3><p>Hit the profit target in one phase — no time limit.</p></div>
+      <div class="step"><div class="num">03</div><h3>Pay only after you pass</h3><p>The activation fee is charged when you activate your Master account.</p></div>
+      <div class="step"><div class="num">04</div><h3>Trade &amp; get rewarded</h3><p>Your Master account goes live; request rewards from your dashboard.</p></div>
+    </div>
+    <div class="callout">Don't pass? You never pay the activation fee. The entry fee is your only cost.</div>
+  </div>
+</section>
+
+<!-- 7. The account -->
+<section class="section alt">
+  <div class="container">
+    <h2 class="center">Trader-first rules on every account</h2>
+    <p class="center sub">Same evaluation terms at every account size.</p>
+    <div class="rules" id="rules"></div>
+  </div>
+</section>
+
+<!-- 8. Pricing -->
+<section class="section" id="pricing">
+  <div class="container">
+    <h2 class="center">Pick your size. Start today.</h2>
+    <p class="center sub">Both prices shown up front. Pay by card or crypto.</p>
+    <div class="size-tabs" id="sizeTabs"></div>
+    <div class="price-card" id="priceCard"></div>
+    <div class="table-wrap">
+      <table class="ptable">
+        <thead><tr><th>Market</th><th>Plan</th><th>Account size</th><th>Entry fee</th><th>Activation (after pass)</th><th></th></tr></thead>
+        <tbody id="priceRows"></tbody>
+      </table>
+    </div>
+    <p class="foot">Where a promotion is running, the struck-through figure is the regular price. One-time fee.</p>
+  </div>
+</section>
+
+<!-- 9. Comparison -->
+<section class="section alt">
+  <div class="container compare">
+    <div>
+      <h2>Same fast track.<br><span class="muted">Far less to risk upfront.</span></h2>
+      <p class="sub">Both paths lead to the same Master account through a single phase. Only Pay After Pass lets you hold the activation fee until you've passed.</p>
+    </div>
+    <div class="cmp-grid">
+      <div class="cmp"><h4>Standard 1-Step</h4><ul><li>Full fee up front</li><li>Single phase</li><li>Same Master account</li></ul></div>
+      <div class="cmp hl"><h4>Pay After Pass</h4><ul><li>Small entry fee</li><li>Single phase</li><li>Same Master account</li><li>Activation only after you pass</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- Live MT5 chart -->
+<section class="section" id="chart">
+  <div class="container">
+    <div class="head-row">
+      <h2>Live markets</h2>
+      <div class="chart-ctrl">
+        <select id="symSel"></select>
+        <div class="tf" id="tfSel"></div>
+      </div>
+    </div>
+    <div class="chart-box"><div id="chartEl"></div><div class="chart-empty" id="chartEmpty">No candles yet — start the MT5 bridge.</div></div>
+    <div class="quote" id="quote"></div>
+  </div>
+</section>
+
+<!-- 10. Get paid -->
+<section class="section getpaid">
+  <div class="container center">
+    <h2>Trade today.<br><span class="grad">Keep the lion's share.</span></h2>
+    <p class="sub">After you pass, request rewards straight from your dashboard.</p>
+  </div>
+</section>
+
+<!-- 11. Testimonials -->
+<section class="section">
+  <div class="container">
+    <h2 class="center">Video Testimonials</h2>
+    <p class="center sub">Hear from traders who made it through.</p>
+    <div class="vgrid" id="vgrid"></div>
+  </div>
+</section>
+
+<!-- 12. FAQ -->
+<section class="section alt">
+  <div class="container narrow">
+    <h2 class="center">Frequently asked questions</h2>
+    <div class="faq" id="faq"></div>
+  </div>
+</section>
+
+<!-- 13. Closing CTA -->
+<section class="section">
+  <div class="container">
+    <div class="final">
+      <div>
+        <h2>Start trading.<br>Pay after you pass.</h2>
+        <p class="sub">A small fee gets you in.</p>
+        <a href="#pricing" class="btn btn-primary">Start Trading</a>
+      </div>
+      <div class="plaque-card small"><div class="plaque-top">TRADEE</div><div class="plaque-title">PAY AFTER<br>PASS</div></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- 14. Footer -->
+<footer class="footer">
+  <div class="container">
+    <div class="socials"><a href="#">X</a><a href="#">IG</a><a href="#">YT</a><a href="#">DC</a><a href="#">FB</a><a href="#">TT</a></div>
+    <div class="fcols">
+      <div><h5>Products</h5><a href="#">Trading Challenges</a><a href="#">Instant Funding</a><a href="#">Pay After Pass</a><a href="#how">How It Works</a></div>
+      <div><h5>Trading</h5><a href="#">Our Rules</a><a href="#pricing">Pricing &amp; Plans</a><a href="#payouts">Rewards &amp; Testimonials</a><a href="#">Forex</a><a href="#">Trading Instruments</a><a href="#">Trading Platforms</a><a href="#">Help Center</a></div>
+      <div><h5>Learn</h5><a href="#">Blog</a><a href="#">Events</a><a href="#">Videos</a><a href="#">Coaching</a></div>
+      <div><h5>Tournaments</h5><a href="#">All Tournaments</a><a href="#">How to Win</a></div>
+      <div><h5>Company</h5><a href="#">About Us</a><a href="#">Contact</a><a href="#">Affiliate Program</a><a href="#">Log In</a></div>
+    </div>
+    <div class="legal-links"><a href="#">Terms &amp; Conditions</a><a href="#">Privacy Policy</a><a href="#">Common Questions</a><a href="#">Press Kit</a></div>
+    <p class="disclaimer">All accounts are simulated demo accounts using virtual funds. Tradee does not accept customer deposits. Rewards are discretionary and not guaranteed. [Replace with your company's legal disclaimer, address and restricted-country list.]</p>
+    <p class="copy">© <span id="yr"></span> Tradee. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="https://unpkg.com/lightweight-charts@4.2.1/dist/lightweight-charts.standalone.production.js"></script>
+<script src="/app.js"></script>
+</body>
+</html>

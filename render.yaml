@@ -1,0 +1,17 @@
+# Render Blueprint — https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: tradee
+    runtime: node
+    region: singapore          # same region as the Supabase project
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: DATABASE_URL       # Supabase session pooler URL (role tradee_app) — set in the dashboard
+        sync: false
+      - key: BRIDGE_API_KEY     # must match mt5_bridge/.env
+        sync: false

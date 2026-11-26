@@ -69,3 +69,10 @@ bridge จะ backfill ย้อนหลัง `HISTORY_BARS` แท่ง แ�
 - payouts / testimonials ที่ `is_sample = true` เป็นข้อมูลตัวอย่าง (มีป้าย SAMPLE บนหน้าเว็บ) ให้แทนด้วยข้อมูลจริง
 - site_stats, disclaimer, ที่อยู่บริษัท, ลิงก์ social ใน footer
 - ยังไม่มีระบบสมัคร/ล็อกอิน/ชำระเงิน (ตารางรองรับไว้แล้ว: users, orders, trading_accounts)
+
+## Deploy บน Render
+1. render.com → **New → Blueprint** → เลือก repo `tradee` (branch ที่มีไฟล์ `render.yaml`)
+2. กรอก `DATABASE_URL` และ `BRIDGE_API_KEY` (ค่าเดียวกับในไฟล์ `.env`) → **Apply**
+3. ได้ URL เช่น `https://tradee.onrender.com` → ใส่เป็น `TRADEE_API` ใน `mt5_bridge/.env` บนเครื่อง Windows
+- แพลนฟรีจะหลับเมื่อไม่มีคนเข้า 15 นาที (ปลุกใช้ ~30-60 วิ) ถ้า bridge ส่งข้อมูลตลอดจะไม่หลับ
+- push โค้ดใหม่เข้า branch นั้น Render จะ deploy ให้อัตโนมัติ

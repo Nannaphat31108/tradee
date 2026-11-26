@@ -85,13 +85,13 @@ function initChart() {
   const el = $('#chartEl');
   chart = LightweightCharts.createChart(el, {
     autoSize: true,
-    layout: { background: { color: 'transparent' }, textColor: '#9a9ab5', fontFamily: 'Inter' },
-    grid: { vertLines: { color: '#1b1b2c' }, horzLines: { color: '#1b1b2c' } },
-    timeScale: { timeVisible: true, borderColor: '#23233a' },
-    rightPriceScale: { borderColor: '#23233a' },
+    layout: { background: { color: 'transparent' }, textColor: '#5b6b8c', fontFamily: 'Inter' },
+    grid: { vertLines: { color: '#eef2fa' }, horzLines: { color: '#eef2fa' } },
+    timeScale: { timeVisible: true, borderColor: '#dde6f5' },
+    rightPriceScale: { borderColor: '#dde6f5' },
   });
-  series = chart.addCandlestickSeries({ upColor: '#22c55e', downColor: '#ef4444', borderVisible: false, wickUpColor: '#22c55e', wickDownColor: '#ef4444' });
-  vol = chart.addHistogramSeries({ priceFormat: { type: 'volume' }, priceScaleId: '', color: 'rgba(124,92,255,.35)' });
+  series = chart.addCandlestickSeries({ upColor: '#2563eb', downColor: '#94a3b8', borderVisible: false, wickUpColor: '#2563eb', wickDownColor: '#94a3b8' });
+  vol = chart.addHistogramSeries({ priceFormat: { type: 'volume' }, priceScaleId: '', color: 'rgba(37,99,235,.18)' });
   vol.priceScale().applyOptions({ scaleMargins: { top: 0.82, bottom: 0 } });
 }
 

@@ -9,16 +9,16 @@ $('#yr').textContent = new Date().getFullYear();
 $('#burger').onclick = () => $('#navLinks').classList.toggle('open');
 
 // Stats
-api('/api/stats').then((rows) => {
+api(`/api/stats?lang=${LANG}`).then((rows) => {
   $('#stats').innerHTML = rows.map((s) => `<div class="stat"><b>${esc(s.value)}</b><span>${esc(s.label)}</span></div>`).join('');
 }).catch(() => {});
 
 // Payouts carousel
 api('/api/payouts').then((rows) => {
   const card = (p) => `<div class="pcard">
-    <div class="who"><span class="flag">${flag(p.country_code)}</span>${esc(p.display_name)} ${p.is_sample ? '<span class="badge">SAMPLE</span>' : ''}</div>
-    <div class="paid">Paid</div><div class="amt">${usd(p.amount)}</div>
-    <div class="meta"><span>${esc(p.country_name)}</span>${p.certificate_url ? `<a href="${esc(p.certificate_url)}" class="link">View certificate</a>` : ''}</div></div>`;
+    <div class="who"><span class="flag">${flag(p.country_code)}</span>${esc(p.display_name)} ${p.is_sample ? `<span class="badge">${t('sample')}</span>` : ''}</div>
+    <div class="paid">${t('paid')}</div><div class="amt">${usd(p.amount)}</div>
+    <div class="meta"><span>${esc(p.country_name)}</span>${p.certificate_url ? `<a href="${esc(p.certificate_url)}" class="link">${t('viewCert')}</a>` : ''}</div></div>`;
   const html = rows.map(card).join('');
   $('#payoutTrack').innerHTML = html + html; // duplicated for seamless loop
 }).catch(() => {});
@@ -26,12 +26,12 @@ api('/api/payouts').then((rows) => {
 // Plan, rules & pricing
 api('/api/plans/pay-after-pass').then((plan) => {
   const rules = [
-    [plan.phases, 'Phase'],
-    [plan.profit_target_pct && `${+plan.profit_target_pct}%`, 'Profit target'],
-    [plan.max_daily_loss_pct && `${+plan.max_daily_loss_pct}%`, 'Max daily loss'],
-    [plan.max_drawdown_pct && `${+plan.max_drawdown_pct}%`, 'Max drawdown'],
-    [plan.profit_split_pct && `Up to ${+plan.profit_split_pct}%`, 'Reward split'],
-    [plan.time_limit_days ? `${plan.time_limit_days} days` : 'None', 'Time limit'],
+    [plan.phases, t('phase')],
+    [plan.profit_target_pct && `${+plan.profit_target_pct}%`, t('profitTarget')],
+    [plan.max_daily_loss_pct && `${+plan.max_daily_loss_pct}%`, t('dailyLoss')],
+    [plan.max_drawdown_pct && `${+plan.max_drawdown_pct}%`, t('drawdown')],
+    [plan.profit_split_pct && `${t('upTo')} ${+plan.profit_split_pct}%`, t('split')],
+    [plan.time_limit_days ? `${plan.time_limit_days} ${t('days')}` : t('none'), t('timeLimit')],
   ].filter(([v]) => v);
   $('#rules').innerHTML = rules.map(([v, l]) => `<div class="rule"><b>${esc(v)}</b><span>${l}</span></div>`).join('');
 
@@ -45,10 +45,10 @@ api('/api/plans/pay-after-pass').then((plan) => {
       <div class="muted">${esc(plan.market)} · ${esc(plan.name)}</div>
       <div class="size">${usd(s.account_size)}</div>
       <div class="big">${priceHtml(s)}</div>
-      <div class="row"><span>Pay today (entry fee)</span><b>${usd(s.entry_price)}</b></div>
-      <div class="row"><span>Pay after you pass (activation)</span><b>${usd(s.activation_fee)}</b></div>
-      <div class="row"><span>Profit target</span><b>${+plan.profit_target_pct}%</b></div>
-      <a href="#" class="btn btn-primary" data-size="${s.id}">Start ${kfmt(+s.account_size)} Challenge</a>`;
+      <div class="row"><span>${t('payToday')}</span><b>${usd(s.entry_price)}</b></div>
+      <div class="row"><span>${t('payAfter')}</span><b>${usd(s.activation_fee)}</b></div>
+      <div class="row"><span>${t('profitTarget')}</span><b>${+plan.profit_target_pct}%</b></div>
+      <a href="#" class="btn btn-primary" data-size="${s.id}">${t('startSize', kfmt(+s.account_size))}</a>`;
   };
   $('#sizeTabs').innerHTML = sizes.map((s, i) => `<button data-i="${i}" class="${i === 0 ? 'on' : ''}">${kfmt(+s.account_size)}</button>`).join('');
   $('#sizeTabs').onclick = (e) => {
@@ -61,19 +61,19 @@ api('/api/plans/pay-after-pass').then((plan) => {
   $('#priceRows').innerHTML = sizes.map((s) => `<tr>
     <td>${esc(plan.market)}</td><td>${esc(plan.name)}</td><td><b>${kfmt(+s.account_size)}</b> <span class="muted">(${usd(s.account_size)})</span></td>
     <td>${priceHtml(s)}</td><td>${usd(s.activation_fee)}</td>
-    <td><a href="#" class="btn btn-primary">Start</a></td></tr>`).join('');
+    <td><a href="#" class="btn btn-primary">${t('start')}</a></td></tr>`).join('');
 }).catch(() => {});
 
 // Testimonials
 api('/api/testimonials').then((rows) => {
-  $('#vgrid').innerHTML = rows.map((t) => `<div class="vcard">
-    ${t.video_url ? `<iframe src="${esc(t.video_url)}" allow="autoplay; fullscreen" loading="lazy"></iframe>` : '<div class="play">▶</div>'}
-    <div class="nm">${esc(t.display_name)} ${t.is_sample ? '<span class="badge">SAMPLE</span>' : ''}</div>
-    <small>${flag(t.country_code)} ${esc(t.country_name)}</small></div>`).join('');
+  $('#vgrid').innerHTML = rows.map((tm) => `<div class="vcard">
+    ${tm.video_url ? `<iframe src="${esc(tm.video_url)}" allow="autoplay; fullscreen" loading="lazy"></iframe>` : '<div class="play">▶</div>'}
+    <div class="nm">${esc(tm.display_name)} ${tm.is_sample ? `<span class="badge">${t('sample')}</span>` : ''}</div>
+    <small>${flag(tm.country_code)} ${esc(tm.country_name)}</small></div>`).join('');
 }).catch(() => {});
 
 // FAQ
-api('/api/faqs').then((rows) => {
+api(`/api/faqs?lang=${LANG}`).then((rows) => {
   $('#faq').innerHTML = rows.map((f) => `<details><summary>${esc(f.question)}</summary><p>${esc(f.answer)}</p></details>`).join('');
 }).catch(() => {});
 
@@ -97,7 +97,12 @@ function initChart() {
 
 async function loadCandles() {
   try {
-    const rows = await api(`/api/candles?symbol=${sym}&timeframe=${tf}&limit=1000`);
+    const res = await fetch(`/api/candles?symbol=${sym}&timeframe=${tf}&limit=500`);
+    if (!res.ok) throw res.status;
+    const rows = await res.json();
+    const simulated = res.headers.get('X-Data-Source') === 'simulated';
+    $('#simBadge').hidden = !simulated;
+    $('#simBadge').textContent = t('simulated');
     $('#chartEmpty').style.display = rows.length ? 'none' : 'grid';
     series.setData(rows.map(({ time, open, high, low, close }) => ({ time, open, high, low, close })));
     vol.setData(rows.map((r) => ({ time: r.time, value: r.volume })));
@@ -109,7 +114,7 @@ async function loadSymbols() {
   const sel = $('#symSel');
   sel.innerHTML = list.map((s) => `<option ${s.symbol === sym ? 'selected' : ''}>${esc(s.symbol)}</option>`).join('');
   const cur = list.find((s) => s.symbol === sym);
-  $('#quote').textContent = cur && cur.bid ? `${sym}  Bid ${(+cur.bid).toFixed(cur.digits)}  ·  Ask ${(+cur.ask).toFixed(cur.digits)}  ·  ${new Date(cur.ts).toLocaleString()}` : '';
+  $('#quote').textContent = cur && cur.bid ? `${sym}  ${t('bid')} ${(+cur.bid).toFixed(cur.digits)}  ·  ${t('ask')} ${(+cur.ask).toFixed(cur.digits)}  ·  ${new Date(cur.ts).toLocaleString(LANG === 'th' ? 'th-TH' : 'en-US')}` : '';
 }
 
 if (window.LightweightCharts) {

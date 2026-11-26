@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "node server/index.js",
-    "db:init": "psql \"$DATABASE_URL\" -f database/schema.sql && psql \"$DATABASE_URL\" -f database/seed.sql"
+    "db:init": "psql \"$DATABASE_URL\" -f database/schema.sql && psql \"$DATABASE_URL\" -f database/seed.sql && psql \"$DATABASE_URL\" -f database/migrations/002_thai.sql"
   },
   "dependencies": {
     "dotenv": "^16.4.5",

@@ -3,11 +3,18 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import 'dotenv/config';
 import { q, pool } from './db.js';
+import { simulatedCandles, simulatedTick } from './simulated.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 app.use(express.json({ limit: '10mb' }));
-app.use(express.static(path.join(__dirname, '..', 'public')));
+const PUBLIC_DIR = path.join(__dirname, '..', 'public');
+app.use(express.static(PUBLIC_DIR));
+// Thai version of the landing page (same HTML, translated client-side)
+app.get(['/th', '/th/'], (_req, res) => res.sendFile(path.join(PUBLIC_DIR, 'index.html')));
+
+// SIMULATED_MARKET: "auto" (default) = simulate only when no MT5 data exists, "on" = always, "off" = never
+const SIM_MODE = (process.env.SIMULATED_MARKET || 'auto').toLowerCase();
 
 const TIMEFRAMES = ['M1', 'M5', 'M15', 'M30', 'H1', 'H4', 'D1', 'W1', 'MN1'];
 const wrap = (fn) => (req, res) => fn(req, res).catch((e) => {
@@ -25,8 +32,9 @@ app.get('/api/plans/:slug', wrap(async (req, res) => {
   res.json(plan);
 }));
 
-app.get('/api/stats', wrap(async (_req, res) => {
-  res.json(await q('SELECT label, value FROM site_stats ORDER BY sort_order'));
+app.get('/api/stats', wrap(async (req, res) => {
+  const col = req.query.lang === 'th' ? 'COALESCE(label_th, label)' : 'label';
+  res.json(await q(`SELECT ${col} AS label, value FROM site_stats ORDER BY sort_order`));
 }));
 
 app.get('/api/payouts', wrap(async (_req, res) => {
@@ -40,16 +48,21 @@ app.get('/api/testimonials', wrap(async (_req, res) => {
 }));
 
 app.get('/api/faqs', wrap(async (req, res) => {
-  res.json(await q('SELECT question, answer FROM faqs WHERE page = $1 ORDER BY sort_order',
-    [req.query.page || 'pay-after-pass']));
+  const lang = req.query.lang === 'th' ? 'th' : 'en';
+  res.json(await q('SELECT question, answer FROM faqs WHERE page = $1 AND lang = $2 ORDER BY sort_order',
+    [req.query.page || 'pay-after-pass', lang]));
 }));
 
 // ---------- Market data (read) ----------
 app.get('/api/symbols', wrap(async (_req, res) => {
-  res.json(await q(
+  const rows = await q(
     `SELECT s.symbol, s.description, s.digits, t.bid, t.ask, t.ts
        FROM symbols s LEFT JOIN ticks_latest t USING (symbol)
-      WHERE s.is_active ORDER BY s.symbol`));
+      WHERE s.is_active ORDER BY s.symbol`);
+  res.json(rows.map((r) => {
+    const simulate = SIM_MODE === 'on' || (SIM_MODE === 'auto' && r.bid == null);
+    return simulate ? { ...r, ...simulatedTick(r.symbol), simulated: true } : { ...r, simulated: false };
+  }));
 }));
 
 // GET /api/candles?symbol=EURUSD&timeframe=H1&limit=500
@@ -62,6 +75,11 @@ app.get('/api/candles', wrap(async (req, res) => {
     `SELECT extract(epoch FROM ts)::bigint AS time, open, high, low, close, tick_volume AS volume
        FROM (SELECT * FROM candles WHERE symbol = $1 AND timeframe = $2 ORDER BY ts DESC LIMIT $3) c
       ORDER BY ts ASC`, [symbol, timeframe, limit]);
+  if (SIM_MODE === 'on' || (SIM_MODE === 'auto' && rows.length === 0)) {
+    res.set('X-Data-Source', 'simulated');
+    return res.json(simulatedCandles(symbol, timeframe, limit));
+  }
+  res.set('X-Data-Source', 'mt5');
   res.json(rows.map((r) => ({ ...r, time: Number(r.time), volume: Number(r.volume) })));
 }));
 
